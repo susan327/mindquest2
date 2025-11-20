@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+{% block title %}クエスト編集{% endblock %}
+
+{% block content %}
+
+<style>
+  .mq-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 12px 40px;
+  }
+
+  .mq-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .admin-nav {
+    max-width: 960px;
+    margin: 0 auto 20px;
+    padding: 8px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+
+  .admin-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #374151;
+  }
+
+  .admin-nav a:hover {
+    background: #e5e7eb;
+  }
+
+  .mq-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+  }
+
+  .mq-group {
+    margin-bottom: 14px;
+  }
+
+  .mq-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .mq-group input[type="text"],
+  .mq-group select,
+  .mq-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .mq-group textarea.mq-desc {
+    min-height: 90px;
+  }
+
+  .mq-hint {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .mq-h2 {
+    font-size: 1.2rem;
+    margin: 4px 0 4px;
+  }
+
+  .steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .step-card {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 10px 10px 12px;
+  }
+
+  .step-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .step-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .step-header-buttons {
+    display: flex;
+    gap: 4px;
+  }
+
+  .step-card select,
+  .step-card textarea,
+  .step-card input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #d4d4d8;
+    font-size: 0.85rem;
+  }
+
+  .step-card textarea {
+    resize: vertical;
+    min-height: 48px;
+  }
+
+  .step-row {
+    margin-bottom: 6px;
+  }
+
+  .step-row label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+
+  .step-row-inline {
+    display: flex;
+    gap: 8px;
+  }
+
+  .step-row-inline > div {
+    flex: 1 1 0;
+  }
+
+  .btn-secondary,
+  .mq-primary,
+  .mq-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #374151;
+  }
+
+  .btn-secondary:hover,
+  .mq-link-btn:hover {
+    background: #f3f4f6;
+  }
+
+  .mq-primary {
+    background: #10b981;
+    border-color: #10b981;
+    color: #fff;
+  }
+
+  .mq-primary:hover {
+    background: #059669;
+  }
+
+  .add-step-wrapper {
+    margin: 4px 0 14px;
+  }
+
+  .mq-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .btn-icon {
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+
+  .btn-icon:hover {
+    background: #f3f4f6;
+  }
+
+  @media (max-width: 768px) {
+    .mq-container {
+      padding: 16px 8px 32px;
+    }
+  }
+</style>
+
+<div class="mq-container">
+  <h1 class="mq-title">クエスト編集</h1>
+
+  <div class="admin-nav">
+    <a href="{{ url_for('admin_quests') }}">📜 クエスト一覧</a>
+    <a href="{{ url_for('quest_create') }}">✨ 新規作成</a>
+    <a href="{{ url_for('index') }}">🏠 トップへ</a>
+  </div>
+
+  <form id="mq-form" method="post">
+    <div class="mq-card">
+      <div class="mq-group">
+        <label for="title">タイトル</label>
+        <input type="text" id="title" name="title" required value="{{ quest.title }}">
+      </div>
+
+      <div class="mq-group">
+        <label for="description">説明文</label>
+        <textarea id="description"
+                  name="description"
+                  class="mq-desc"
+                  rows="5">{{ quest.description }}</textarea>
+      </div>
+
+      <div class="mq-group">
+        <label for="type_key">対象タイプ</label>
+        <select id="type_key" name="type_key">
+          <option value="common" {% if quest.type_key == "common" %}selected{% endif %}>全タイプ向け</option>
+          {% for key, info in type_info.items() %}
+            {% if key != 'common' %}
+              <option value="{{ key }}" {% if quest.type_key == key %}selected{% endif %}>
+                {{ info.name }}向け
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <div class="mq-hint">誰向けのクエストかを選びます。</div>
+      </div>
+    </div>
+
+    <h2 class="mq-h2">ステップ</h2>
+    <p class="mq-hint">既存のステップ内容を編集できます。</p>
+
+    <input type="hidden" id="steps-json" name="steps_json">
+
+    <div id="mq-steps" class="steps-container"></div>
+
+    <div class="add-step-wrapper">
+      <button type="button" id="mq-add-step" class="btn-secondary">＋ ステップ追加</button>
+    </div>
+
+    <div class="mq-actions">
+      <button type="submit" class="mq-primary">更新する</button>
+      <a href="{{ url_for('admin_quests') }}" class="mq-link-btn">一覧に戻る</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  /* 既存 steps_json を JS へ */
+  const RAW_EXISTING = {{ quest.steps_json|default('[]', true)|safe }};
+
+  function normalizeStep(raw) {
+    if (typeof raw === "string") {
+      return {
+        title: raw,
+        type: "text",
+        grid_rows: 0,
+        grid_cols: 0,
+        options: []
+      };
+    }
+    return {
+      title: raw.title || raw.step_title || raw.label || "",
+      type: raw.type || raw.step_type || "text",
+      grid_rows: Number(raw.grid_rows || raw.rows || 0) || 0,
+      grid_cols: Number(raw.grid_cols || raw.cols || 0) || 0,
+      options: Array.isArray(raw.options || raw.choices)
+        ? (raw.options || raw.choices)
+        : (typeof raw.options === "string"
+            ? raw.options.split(/\r?\n/).filter(x => x.trim())
+            : [])
+    };
+  }
+
+  const EXISTING = Array.isArray(RAW_EXISTING) && RAW_EXISTING.length
+    ? RAW_EXISTING.map(normalizeStep)
+    : [];
+
+  function createStep(data = {}) {
+    const wrap = document.getElementById("mq-steps");
+    const index = wrap.children.length;
+    const type = data.type || "text";
+
+    const el = document.createElement("div");
+    el.className = "step-card";
+    el.dataset.idx = index;
+
+    const optionsText = Array.isArray(data.options)
+      ? data.options.join("\\n")
+      : (data.options || "");
+
+    el.innerHTML = `
+      <div class="step-card-header">
+        <span class="step-label">ステップ${index + 1}</span>
+        <div class="step-header-buttons">
+          <button type="button" class="btn-icon mq-up">↑</button>
+          <button type="button" class="btn-icon mq-down">↓</button>
+          <button type="button" class="btn-icon mq-del">削除</button>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <label>ステップの種類</label>
+        <select class="step-type">
+          <option value="text"   ${type === "text" ? "selected" : ""}>自由記述</option>
+          <option value="choice" ${type === "choice" ? "selected" : ""}>選択形式</option>
+          <option value="grid"   ${type === "grid" ? "selected" : ""}>グリッド形式</option>
+        </select>
+      </div>
+
+      <div class="step-row">
+        <label>質問文 / お題</label>
+        <textarea class="step-title" rows="2">${data.title || ""}</textarea>
+      </div>
+
+      <div class="step-row step-row-inline">
+        <div>
+          <label>グリッド行数</label>
+          <input type="number" min="0" class="step-rows" value="${data.grid_rows || 0}">
+        </div>
+        <div>
+          <label>グリッド列数</label>
+          <input type="number" min="0" class="step-cols" value="${data.grid_cols || 0}">
+        </div>
+      </div>
+
+      <div class="step-row">
+        <label>選択肢（1行に1つ）</label>
+        <textarea class="step-options" rows="2">${optionsText}</textarea>
+      </div>
+    `;
+
+    // イベント
+    el.querySelector(".mq-up").addEventListener("click", () => {
+      const wrap = document.getElementById("mq-steps");
+      const idx = Number(el.dataset.idx);
+      if (idx === 0) return;
+      wrap.insertBefore(el, wrap.children[idx - 1]);
+      renumber();
+    });
+
+    el.querySelector(".mq-down").addEventListener("click", () => {
+      const wrap = document.getElementById("mq-steps");
+      const idx = Number(el.dataset.idx);
+      if (idx === wrap.children.length - 1) return;
+      wrap.insertBefore(wrap.children[idx + 1], el);
+      renumber();
+    });
+
+    el.querySelector(".mq-del").addEventListener("click", () => {
+      el.remove();
+      renumber();
+    });
+
+    wrap.appendChild(el);
+  }
+
+  function renumber() {
+    const wrap = document.getElementById("mq-steps");
+    Array.from(wrap.children).forEach((el, idx) => {
+      el.dataset.idx = idx;
+      el.querySelector(".step-label").textContent = `ステップ${idx + 1}`;
+    });
+  }
+
+  function buildJSON(event) {
+    const wrap = document.getElementById("mq-steps");
+    const steps = [];
+
+    Array.from(wrap.children).forEach((el) => {
+      const type = el.querySelector(".step-type").value || "text";
+      const title = el.querySelector(".step-title").value || "";
+      const rows = Number(el.querySelector(".step-rows").value || 0);
+      const cols = Number(el.querySelector(".step-cols").value || 0);
+      const optsRaw = el.querySelector(".step-options").value || "";
+
+      const options = optsRaw
+        .split(/\r?\n/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      steps.push({
+        title: title,
+        type: type,
+        grid_rows: rows,
+        grid_cols: cols,
+        options: options,
+      });
+    });
+
+    document.getElementById("steps-json").value = JSON.stringify(steps);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    (EXISTING.length ? EXISTING : [{}]).forEach(st => createStep(st));
+
+    document.getElementById("mq-add-step").addEventListener("click", () => {
+      createStep({});
+      renumber();
+    });
+
+    document.getElementById("mq-form").addEventListener("submit", buildJSON);
+  });
+</script>
+
+{% endblock %}

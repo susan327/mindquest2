@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}クエスト管理{% endblock %}
+
+{% block content %}
+
+<style>
+  .mq-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 12px 40px;
+  }
+
+  .mq-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .mq-desc {
+    color: #555;
+    text-align: center;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+
+  /* 管理ナビ（旧UIっぽく中央寄せ） */
+  .admin-nav {
+    max-width: 960px;
+    margin: 0 auto 20px;
+    padding: 8px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+
+  .admin-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #374151;
+  }
+
+  .admin-nav a:hover {
+    background: #e5e7eb;
+  }
+
+  .admin-nav code {
+    font-size: 0.8rem;
+    background: #fff;
+    padding: 1px 4px;
+    border-radius: 4px;
+  }
+
+  .mq-table-wrapper {
+    margin-top: 10px;
+    overflow-x: auto;
+  }
+
+  table.mq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: #fff;
+  }
+
+  table.mq-table th,
+  table.mq-table td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  table.mq-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  table.mq-table tr:hover {
+    background: #f9fafb;
+  }
+
+  .mq-title-cell {
+    font-weight: 600;
+  }
+
+  .mq-desc-cell {
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .mq-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: #eef2ff;
+    color: #374151;
+    margin-right: 4px;
+  }
+
+  .mq-badge.cat {
+    background: #dcfce7;
+  }
+
+  .mq-small {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  .mq-actions {
+    white-space: nowrap;
+  }
+
+  .mq-btn {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    text-decoration: none;
+    color: #374151;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  .mq-btn:hover {
+    background: #f3f4f6;
+  }
+
+  .mq-btn-danger {
+    border-color: #ef4444;
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .mq-btn-danger:hover {
+    background: #fecaca;
+  }
+
+  .inline-form {
+    display: inline;
+  }
+
+  @media (max-width: 768px) {
+    .mq-container {
+      padding: 16px 8px 32px;
+    }
+    .mq-title {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+
+<div class="mq-container">
+  <h1 class="mq-title">クエスト管理</h1>
+  <p class="mq-desc">
+    クエストの一覧・編集・削除、新規作成ができます。<br>
+    プレイヤー側のクエスト表示は <code>/quests</code> から確認できます。
+  </p>
+
+  <div class="admin-nav">
+    <a href="{{ url_for('admin_quests') }}">📜 クエスト一覧</a>
+    <a href="{{ url_for('quest_create') }}">✨ 新規クエスト作成</a>
+    <a href="{{ url_for('quest_success') }}">✅ 作成完了ページの確認</a>
+    <a href="{{ url_for('quest_list') }}">🎮 プレイヤー用クエスト一覧 <code>/quests</code></a>
+    <a href="{{ url_for('index') }}">🏠 トップに戻る</a>
+  </div>
+
+  {% if quests %}
+  <div class="mq-table-wrapper">
+    <table class="mq-table">
+      <thead>
+        <tr>
+          <th style="width: 30%;">タイトル</th>
+          <th style="width: 30%;">説明</th>
+          <th style="width: 20%;">対象タイプ / カテゴリ</th>
+          <th style="width: 12%;">更新日時</th>
+          <th style="width: 8%;">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quest in quests %}
+        <tr>
+          <td class="mq-title-cell">
+            {{ quest.title }}
+          </td>
+          <td class="mq-desc-cell">
+            {{ quest.description }}
+          </td>
+          <td>
+            <span class="mq-badge">
+              対象：
+              {{ type_info.get(quest.type_key, {}).get("name", "共通") }}
+            </span>
+            <br>
+            <span class="mq-badge cat">
+              カテゴリ：
+              {{ quest_type_labels.get(quest.category, "その他") }}
+            </span>
+          </td>
+          <td class="mq-small">
+            {{ quest.updated_at|jst("%Y-%m-%d %H:%M") }}
+          </td>
+          <td class="mq-actions">
+            <a href="{{ url_for('admin_quest_edit', quest_id=quest.id) }}" class="mq-btn">
+              ✏️ 編集
+            </a>
+            <form method="post"
+                  action="{{ url_for('admin_quest_delete', quest_id=quest.id) }}"
+                  class="inline-form"
+                  onsubmit="return confirm('本当にこのクエストを削除しますか？');">
+              <button type="submit" class="mq-btn mq-btn-danger">🗑 削除</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p style="color:#777; margin-top:16px;">まだクエストが登録されていません。「新規クエスト作成」から追加してみてください。</p>
+  {% endif %}
+</div>
+
+{% endblock %}

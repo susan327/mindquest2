@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .journal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2em 1em;
+  }
+
+  .journal-container h1,
+  .journal-container h2 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  .journal-form textarea {
+    width: 100%;
+    max-width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  .journal-form button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .journal-form button:hover {
+    background: #45a049;
+  }
+  .entry-card {
+    background: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .entry-card time {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0f8ff;
+    border-left: 5px solid #4CAF50;
+    border-radius: 6px;
+    color: #333;
+  }
+  .ai-feedback-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 5px;
+    cursor: pointer;
+  }
+  .ai-feedback-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .journal-mode-switch {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .journal-mode-switch button {
+    margin: 0 0.3em;
+  }
+
+  /* ▼ 削除ボタン用スタイル ▼ */
+  .entry-card form {
+    margin-top: 0.5em;
+  }
+  .delete-btn {
+    background: #e57373;
+    color: #fff;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .delete-btn:hover {
+    background: #ef5350;
+  }
+  /* ▲ 削除ボタンここまで ▲ */
+
+  /* ▼ 快モーダル用スタイル（ちょっと見やすく） ▼ */
+  #kaiSuggestionModal {
+    display:none;
+    position:fixed;
+    top:30%;
+    left:50%;
+    transform:translate(-50%, -30%);
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    max-width: 420px;
+    width: 90%;
+    z-index: 1000;
+  }
+  #kaiSuggestionModal h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  #kaiSuggestionModal p {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  #kaiSuggestions {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  #kaiSuggestions li {
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  #kaiSuggestionModal button {
+    margin-right: 8px;
+  }
+  /* ▲ 快モーダルここまで ▲ */
+</style>
+
+<div class="journal-container">
+  <h1>📝 日記を書く</h1>
+
+  <div class="journal-mode-switch">
+    <button type="button" onclick="switchMode('simple')">📝 通常日記モード</button>
+    <button type="button" onclick="switchMode('steps')">🧠 6ステップモード</button>
+  </div>
+
+  <!-- 通常日記モード -->
+  <div id="simpleMode">
+    <form method="POST"
+          action="/journal/save"
+          class="journal-form"
+          onsubmit="return confirmKaiRegister(event);">
+      <textarea name="content"
+          id="journalContent"
+          placeholder="今日感じたことや考えたことを書いてみよう..."
+          required>{{ draft or "" }}</textarea><br>
+      <input type="hidden" name="kai_extracted" id="kaiExtracted">
+      <button type="submit">保存する</button>
+    </form>
+
+    <!-- 快モーダル（チェックで選択できるように変更） -->
+    <div id="kaiSuggestionModal">
+      <h3>快候補を確認</h3>
+      <p>以下の「快」が抽出されました。<br>保存したいものだけチェックを入れてください。</p>
+      <ul id="kaiSuggestions"></ul>
+      <button type="button" onclick="submitConfirmedJournal()">選択した快を保存する</button>
+      <button type="button" onclick="closeKaiModal()">快を保存せずに日記だけ保存</button>
+    </div>
+  </div>
+
+  <!-- 6ステップモード -->
+  <div id="stepMode" style="display: none;">
+    <form method="POST" action="/journal/compose" class="journal-form">
+      <textarea name="step1" placeholder="① 出来事（例：上司に注意された／友人と電話した／カフェに寄った）"></textarea><br>
+      <textarea name="step2" placeholder="② 感情（例：悲しかった／安心した／イライラした）"></textarea><br>
+      <textarea name="step3" placeholder="③ 思考（例：自分はダメかも／頑張ってよかった／嫌われたかも）"></textarea><br>
+      <textarea name="step4" placeholder="④ 分析（例：評価を気にしすぎ／完璧主義だから／認められたい気持ち）"></textarea><br>
+      <textarea name="step5" placeholder="⑤ 行動（例：謝った／散歩した／そのまま帰った）"></textarea><br>
+      <textarea name="step6" placeholder="⑥ 結果（例：相手が笑ってくれた／少し前向きになれた／気づきがあった）"></textarea><br>
+      <button type="submit">📝 AIにまとめてもらう</button>
+    </form>
+  </div>
+
+  <hr>
+  <h2>📘 過去の日記一覧</h2>
+  {% if entries %}
+    {% for entry in entries %}
+      <div class="entry-card">
+        <time>{{ entry.created_at|jst("%Y-%m-%d %H:%M") }}</time>
+        <p>{{ entry.content }}</p>
+
+        <!-- AIフィードバック -->
+        <form method="POST" action="/journal/feedback">
+          <input type="hidden" name="entry_id" value="{{ entry.id }}">
+          <button type="submit" class="ai-feedback-btn">🧠 AIに感想をもらう</button>
+        </form>
+
+        {% if entry.feedback %}
+          <div class="feedback">💬 {{ entry.feedback }}</div>
+        {% endif %}
+
+        <!-- 日記削除ボタン -->
+        <form method="POST"
+              action="{{ url_for('journal_delete', entry_id=entry.id) }}"
+              onsubmit="return confirm('この日記を本当に削除しますか？');">
+          <button type="submit" class="delete-btn">🗑 削除</button>
+        </form>
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>まだ日記がありません。</p>
+  {% endif %}
+</div>
+
+<script>
+function switchMode(mode) {
+  document.getElementById("simpleMode").style.display =
+    (mode === "simple") ? "block" : "none";
+  document.getElementById("stepMode").style.display =
+    (mode === "steps") ? "block" : "none";
+}
+
+function confirmKaiRegister(event) {
+  event.preventDefault();
+
+  const form = document.querySelector("#simpleMode form");
+  const textarea = document.getElementById("journalContent");
+  const content = (textarea.value || "").trim();
+
+  if (!content) {
+    alert("日記の内容を入力してね");
+    textarea.focus();
+    return false;
+  }
+
+  fetch("/journal/extract_kai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.kai && data.kai.length > 0) {
+      const ul = document.getElementById("kaiSuggestions");
+      ul.innerHTML = "";
+
+      // 抽出された快をチェックボックス付きで表示
+      data.kai.forEach(k => {
+        const li = document.createElement("li");
+
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "kai-checkbox";
+        checkbox.value = k;
+        checkbox.checked = true;
+
+        const span = document.createElement("span");
+        span.textContent = " " + k;
+
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        li.appendChild(label);
+        ul.appendChild(li);
+      });
+
+      document.getElementById("kaiSuggestionModal").style.display = "block";
+    } else {
+      // 快が抽出されなかった場合は、そのまま日記だけ保存
+      form.submit();
+    }
+  })
+  .catch(err => {
+    console.error("快抽出エラー:", err);
+    // エラー時も日記だけは保存
+    form.submit();
+  });
+
+  return false;
+}
+
+function submitConfirmedJournal() {
+  // チェックが入っている快だけを集める
+  const checkboxes = Array.from(
+    document.querySelectorAll("#kaiSuggestions .kai-checkbox")
+  );
+
+  const selected = checkboxes
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  const hidden = document.getElementById("kaiExtracted");
+
+  if (selected.length > 0) {
+    hidden.value = JSON.stringify(selected);
+  } else {
+    // ひとつも選ばなかった場合は、快は保存しない（空で送る）
+    hidden.value = "";
+  }
+
+  document.getElementById("kaiSuggestionModal").style.display = "none";
+  document.querySelector("#simpleMode form").submit();
+}
+
+function closeKaiModal() {
+  // モーダルを閉じて
+  document.getElementById("kaiSuggestionModal").style.display = "none";
+  // 快は登録しないので hidden は空のまま
+  document.getElementById("kaiExtracted").value = "";
+  // 日記だけ保存する
+  document.querySelector("#simpleMode form").submit();
+}
+</script>
+{% endblock %}

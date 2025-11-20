@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .kai-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2em 1em;
+  }
+
+  .kai-container h2,
+  .kai-container h3 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  ul.kai-list {
+    list-style: none;
+    padding: 0;
+  }
+  ul.kai-list li {
+    margin-bottom: 10px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .kai-container button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .kai-container button:hover {
+    background: #45a049;
+  }
+  .kai-container input[type="text"] {
+    padding: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 200px;
+  }
+  #kaiModal {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .kai-presets {
+    text-align: center;
+    margin-top: 1em;
+  }
+  .kai-presets button {
+    margin: 0.3em;
+  }
+</style>
+
+<div class="kai-container">
+  <h2>🧘‍♀️ あなたの快（実行回数つき）</h2>
+  <ul class="kai-list" id="kaiList">
+    <li>読み込み中...</li>
+  </ul>
+
+  <h3>＋ 快を追加する</h3>
+  <div style="margin-bottom: 1em; text-align: center;">
+    <input type="text" id="customKaiInput" placeholder="自由に快を入力..." />
+    <button onclick="submitCustomKai()">登録</button>
+  </div>
+
+  <div class="kai-presets">
+    <button onclick="confirmKai('朝の散歩')">朝の散歩</button>
+    <button onclick="confirmKai('コーヒーを飲む時間')">コーヒーを飲む時間</button>
+    <button onclick="confirmKai('日記を書く時間')">日記を書く時間</button>
+  </div>
+</div>
+
+<!-- モーダル -->
+<div id="kaiModal">
+  <p id="kaiConfirmText">この行動を快として登録しますか？</p>
+  <button onclick="submitKai()">はい</button>
+  <button onclick="closeModal()">キャンセル</button>
+</div>
+
+<script>
+  let selectedKai = "";
+
+  function confirmKai(kai) {
+    selectedKai = kai;
+    document.getElementById("kaiConfirmText").innerText = `「${kai}」を快として登録しますか？`;
+    document.getElementById("kaiModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("kaiModal").style.display = "none";
+    selectedKai = "";
+  }
+
+  function submitKai() {
+    fetch("/register_kai", {
+      method: "POST",
+      body: JSON.stringify({ kai: selectedKai }),
+      headers: { "Content-Type": "application/json" },
+    }).then(() => {
+      alert("登録しました！");
+      closeModal();
+      location.reload();
+    });
+  }
+
+  function deleteKai(kai) {
+    if (confirm(`本当に「${kai}」を削除しますか？`)) {
+      fetch("/delete_kai", {
+        method: "POST",
+        body: JSON.stringify({ kai }),
+        headers: { "Content-Type": "application/json" },
+      }).then(() => {
+        alert("削除しました");
+        location.reload();
+      });
+    }
+  }
+
+  function submitCustomKai() {
+    const input = document.getElementById("customKaiInput");
+    const kai = input.value.trim();
+    if (!kai) {
+      alert("快を入力してください！");
+      return;
+    }
+
+    fetch("/register_kai", {
+      method: "POST",
+      body: JSON.stringify({ kai }),
+      headers: { "Content-Type": "application/json" },
+    }).then(() => {
+      alert("登録しました！");
+      input.value = "";
+      location.reload();
+    });
+  }
+
+  // ✅ 快一覧の取得・動的表示
+  window.onload = () => {
+    fetch("/api/kai_status")
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById("kaiList");
+        ul.innerHTML = "";
+
+        if (!data.logs || data.logs.length === 0) {
+          ul.innerHTML = "<li>まだ快が登録されていません</li>";
+        } else {
+          data.logs.forEach(log => {
+            const li = document.createElement("li");
+            li.innerHTML = `🌟 ${log.name}（${log.count}回） <button onclick="deleteKai('${log.name}')">削除</button>`;
+            ul.appendChild(li);
+          });
+        }
+      })
+      .catch(err => {
+        console.error("快一覧取得エラー:", err);
+        document.getElementById("kaiList").innerHTML = "<li>快一覧の取得に失敗しました</li>";
+      });
+  };
+</script>
+{% endblock %}

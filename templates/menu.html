@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}メニュー画面{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>ようこそ、{{ name }}さん！</h1>
+    <p>あなたのタイプ：<strong>{{ user_type }}</strong></p>
+    <p>レベル：<strong>Lv.{{ level }}</strong></p>
+
+    <!-- ▼ ログイン状態の表示エリア -->
+    <div style="margin: 10px 0; padding: 8px 12px; border-radius: 8px; background: #f5f5f5;">
+      {% if user and user.email %}
+        <p style="margin: 0; font-size: 14px;">
+          🔐 ログイン中：<strong>{{ user.email }}</strong>
+        </p>
+      {% else %}
+        <p style="margin: 0; font-size: 14px;">
+          👤 現在は <strong>この端末だけの冒険者</strong> としてプレイ中です。<br>
+          メール登録すると、他の端末からも続けてプレイできます。
+        </p>
+      {% endif %}
+    </div>
+    <!-- ▲ ここまでログイン表示 -->
+
+    <div class="menu">
+       <a href="{{ url_for('start') }}" class="menu-button">🧪 診断を受ける</a>
+       <a href="{{ url_for('quest_top') }}" class="menu-button">🗺 クエストに行く</a>
+       <a href="{{ url_for('journal') }}" class="menu-button">📝 日記を書く</a>
+       <a href="{{ url_for('kai_status') }}" class="menu-button">🧘‍♀️ 自分の快一覧</a>
+       <a href="{{ url_for('types') }}" class="menu-button">📜 性格一覧を見る</a>
+       <a href="{{ url_for('name_change') }}" class="menu-button">✏️ 名前を変更する</a>
+     
+
+       <a href="{{ url_for('account') }}" class="menu-button">
+           👤 ログイン・ユーザー登録
+       </a>
+
+       {% if user and user.email %}
+       <a href="{{ url_for('logout') }}" class="menu-button" style="background:#e74c3c;">
+           🚪 ログアウト
+       </a>
+       {% endif %}
+    </div>
+</div>
+{% endblock %}

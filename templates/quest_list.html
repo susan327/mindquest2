@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+  .quest-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2em 1em;
+  }
+  h1 {
+    text-align: center;
+    color: #5A8DEE;
+    margin-bottom: 1em;
+  }
+  .user-type {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2em;
+  }
+  .user-type span {
+    color: #5A8DEE;
+  }
+
+  form.filter-form {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+  input[type="text"],
+  select {
+    font-size: 1em;
+    padding: 0.5em;
+    margin-right: 0.5em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  button {
+    padding: 0.5em 1em;
+    background: #5A8DEE;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #4169e1;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 1.5em;
+    padding: 1.2em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+
+  .quest-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.3em;
+  }
+
+  .quest-meta {
+    font-size: 0.85em;
+    margin-bottom: 0.6em;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    border-radius: 999px;
+    margin-right: 0.4em;
+    margin-bottom: 0.2em;
+    font-size: 0.8em;
+    border: 1px solid transparent;
+  }
+
+  .tag-type {
+    background-color: #eef2ff;
+    color: #334155;
+    border-color: #c7d2fe;
+  }
+
+  .tag-status {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5f5;
+  }
+
+  .status-not-started {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+  .status-in-progress {
+    background-color: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+  .status-completed {
+    background-color: #ecfdf3;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+
+  .badge-recommended {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+  }
+  .badge-common {
+    background-color: #e5e7eb;
+    color: #111827;
+    border-color: #d1d5db;
+  }
+
+  .quest-description {
+    margin: 0.8em 0;
+    color: #444;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.5em 1.2em;
+    background-color: #5A8DEE;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 1em;
+  }
+  .btn:hover {
+    background-color: #4169e1;
+  }
+</style>
+
+<div class="quest-container">
+  <h1>{{ title }}</h1>
+
+  {% if user_type %}
+    <p class="user-type">あなたのタイプは <span>{{ user_type }}</span> です</p>
+  {% endif %}
+
+  <form method="get" class="filter-form">
+    <input type="text" name="search" placeholder="キーワードで検索"
+           value="{{ request.args.get('search', '') }}">
+    <select name="filter">
+      <option value="">-- 全て表示 --</option>
+      {% for key, label in type_labels.items() %}
+        <option value="{{ key }}"
+          {% if request.args.get('filter') == key %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit">🔍 検索</button>
+  </form>
+
+  <ul>
+    {% for q in quests %}
+
+      {# ---- 対象タイプのラベル ---- #}
+      {% set type_key = q["type"]|default("") %}
+      {% set base_label = type_labels[type_key]|default("その他") %}
+
+      {% if type_key == "all" %}
+        {% set type_label = "全タイプ向け" %}
+      {% else %}
+        {% set type_label = base_label ~ "向け" %}
+      {% endif %}
+
+      {# ---- ステータス（未挑戦 / 挑戦中 / クリア済み！） ---- #}
+      {% set status = q["status"]|default("not_started") %}
+
+      <li>
+        <div class="quest-title">
+          {{ q["title"] }}
+        </div>
+
+        <div class="quest-meta">
+          <!-- 対象タイプ表示：「全タイプ向け」「○○向け」 -->
+          <span class="tag tag-type">{{ type_label }}</span>
+
+          <!-- ユーザーとのマッチング（おすすめ / 全タイプ向け） -->
+          {% if user_type and type_key|trim == user_type|trim %}
+            <span class="tag badge-recommended">🌟 あなたにおすすめ！</span>
+          {% elif type_key == "all" %}
+            <span class="tag badge-common">🌱 全タイプ向け</span>
+          {% endif %}
+
+          <!-- ステータス表示 -->
+          <span class="tag tag-status
+            {% if status == 'not_started' %} status-not-started
+            {% elif status == 'in_progress' %} status-in-progress
+            {% elif status == 'completed' %} status-completed
+            {% endif %}
+          ">
+            {% if status == 'not_started' %}
+              未挑戦
+            {% elif status == 'in_progress' %}
+              挑戦中
+            {% elif status == 'completed' %}
+              クリア済み！
+            {% else %}
+              未挑戦
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="quest-description">
+          {{ q["description"] or "（説明なし）" }}
+        </div>
+
+        <a href="/quest/{{ q['id'] }}" class="btn">
+          このクエストに挑戦する
+        </a>
+      </li>
+
+    {% else %}
+      <li style="text-align:center; color:gray;">
+        該当するクエストが見つかりませんでした。
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div style="text-align: center;">
+    <a href="/quest" class="btn">← クエスト選択に戻る</a>
+  </div>
+</div>
+{% endblock %}
