@@ -1,4 +1,5 @@
-flask
+Flask
+Flask-SQLAlchemy
 python-dotenv
 google-generativeai
 psycopg2-binary
