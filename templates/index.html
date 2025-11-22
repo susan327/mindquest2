@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>マインドクエスト - タイトル</title>
+
+    <!-- ★ これが無いとスマホでレスポンシブ効かない -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 共通CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- タイトル用フォント -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+JP:wght@400;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+
+    <script>
+        function confirmReset() {
+            if (confirm("本当に冒険をやり直しますか？")) {
+                if (confirm("これまでの診断・日記データはすべて削除されます。よろしいですか？")) {
+                    window.location.href = "/reset";
+                }
+            }
+        }
+
+        function showIntro() {
+            const msg = document.getElementById('intro-message');
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.opacity = 1; }, 50);
+        }
+
+        function hideIntro() {
+            const msg = document.getElementById('intro-message');
+            msg.style.opacity = 0;
+            setTimeout(() => { msg.style.display = 'none'; }, 500);
+        }
+
+        window.addEventListener('load', () => {
+            showIntro();
+        });
+    </script>
+
+    <style>
+        /* ===== イントロメッセージ ===== */
+        #intro-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 2px solid #aaa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            z-index: 9999;
+            max-width: 500px;
+            width: 90%;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            text-align: center;
+            font-family: 'Shippori Mincho', serif;
+            line-height: 1.8;
+        }
+
+        .intro-ok-btn {
+            margin-top: 20px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .intro-ok-btn:hover {
+            background-color: #43a047;
+        }
+
+        /* ===== タイトルレイアウト ===== */
+        .title-container {
+            max-width: 900px;
+            margin: 40px auto 28px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.0rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .title-jp {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .title-catch {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 28px;
+        }
+
+        .title-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .title-menu .menu-button {
+            font-size: 1.1rem;
+            min-width: 230px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+            border: none;
+        }
+
+        .btn-start {
+            background-color: #3498db;
+        }
+        .btn-start:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            background-color: crimson;
+        }
+        .btn-reset:hover {
+            background-color: #b30019;
+        }
+
+        .title-credit {
+            margin-top: 4px;
+            font-size: 0.95rem;
+            text-decoration: underline;
+            color: #444;
+        }
+
+        .title-credit:hover {
+            color: #222;
+        }
+
+        @media (min-width: 768px) {
+            .title-menu {
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+            }
+        }
+
+        /* =====📱 スマホ向け調整 ===== */
+        @media (max-width: 480px) {
+            /* タイトルでかく */
+            .title-en {
+                font-size: 3.2rem;
+            }
+            .title-jp {
+                font-size: 1.3rem;
+            }
+            .title-catch {
+                font-size: 1.5rem;
+            }
+
+            /* ポップアップをほぼ全幅＆上寄せに */
+            #intro-message {
+                top: 10% !important;
+                left: 50% !important;
+                transform: translate(-50%, 0) !important;
+                width: 94% !important;
+                max-width: none !important;
+                border-radius: 14px;
+                padding: 22px 18px;
+            }
+
+            .intro-ok-btn {
+                width: 70%;
+                max-width: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- イントロメッセージ -->
+    <div id="intro-message">
+        <p>ここは心の迷宮。</p>
+        <p>迷いや葛藤、過去の影が行く手を阻む。</p>
+        <p>だが、その奥には…本当の“自分”が待っている。</p>
+        <p><strong>さあ、いま旅立とう。</strong></p>
+        <p style="font-size: 0.9rem; color: #666;">（このアプリはオートセーブに対応しています）</p>
+
+        <button class="intro-ok-btn" onclick="hideIntro()">OK</button>
+    </div>
+
+    <!-- タイトル本体 -->
+    <div class="container title-container">
+
+        <div class="title-en">MINDQUEST</div>
+        <div class="title-jp">（マインドクエスト）</div>
+        <div class="title-catch">心の迷宮を、いま旅立とう。</div>
+
+        <div class="menu title-menu">
+            <a href="/menu" class="menu-button btn-start">▶ 冒険をはじめる</a>
+            <button onclick="confirmReset()" class="menu-button btn-reset">
+                🔄 冒険をやり直す
+            </button>
+        </div>
+
+        <div style="margin-top: 8px;">
+           <a href="/credit" class="credit-button">🪪 クレジット</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

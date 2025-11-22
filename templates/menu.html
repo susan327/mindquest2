@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}メニュー画面{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 720px; margin: 0 auto;">
+    <h1 style="margin-top: 20px; margin-bottom: 10px;">ようこそ、{{ name }}さん！</h1>
+
+    <p>あなたのタイプ：<strong>{{ user_type }}</strong></p>
+    <p>レベル：<strong>Lv.{{ level }}</strong></p>
+
+    <!-- ▼ ログイン状態の表示エリア -->
+    <div style="margin: 20px 0; padding: 12px 16px; border-radius: 8px; background: #f5f5f5;">
+        {% if user and user.email %}
+            <p style="margin: 0 0 4px 0; font-size: 14px;">
+                🔐 ログイン中：<strong>{{ user.email }}</strong>
+            </p>
+            <p style="margin: 0; font-size: 13px; color: #555;">
+                このアカウントで、どの端末からでも続きからプレイできます。
+            </p>
+        {% else %}
+            <p style="margin: 0 0 4px 0; font-size: 14px;">
+                👤 現在は <strong>この端末だけの冒険者</strong> としてプレイ中です。
+            </p>
+            <p style="margin: 0; font-size: 13px; color: #555;">
+                メール登録すると、他の端末からも続けてプレイできます。
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- ▼ メインメニューのボタン群 -->
+    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+        <a href="{{ url_for('start') }}" class="menu-button">
+            🧭 診断を受ける
+        </a>
+
+        <a href="{{ url_for('quest_list') }}" class="menu-button">
+            🗺 クエストに行く
+        </a>
+
+        <a href="{{ url_for('journal') }}" class="menu-button">
+            📝 日記を書く
+        </a>
+
+        <a href="{{ url_for('kai_status') }}" class="menu-button">
+            🧘 自分の快一覧
+        </a>
+ <a href="{{ url_for('logs') }}" class="menu-button">
+            📊 冒険ログを見る
+        </a>
+
+        <a href="{{ url_for('types') }}" class="menu-button">
+            📚 性格一覧を見る
+        </a>
+
+<a href="{{ url_for('feedback') }}" class="menu-button" target="_blank">
+            📝 ご意見・感想を送る
+        </a>
+
+    </div>
+
+    <!-- ▼ アカウント関連 -->
+    <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <a href="{{ url_for('account') }}" class="menu-button">
+            👤 ログイン・ユーザー登録
+        </a>
+
+        {% if user and user.email %}
+        <a href="{{ url_for('logout') }}" class="menu-button" style="background:#e74c3c;">
+            🚪 ログアウト
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
