@@ -59,6 +59,22 @@
             line-height: 1.8;
         }
 
+        .intro-ok-btn {
+            margin-top: 20px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .intro-ok-btn:hover {
+            background-color: #43a047;
+        }
+
         /* ===== タイトルレイアウト ===== */
         .title-container {
             max-width: 900px;
@@ -70,7 +86,7 @@
         /* 英字タイトル */
         .title-en {
             font-family: 'Montserrat', sans-serif;
-            font-size: 2.8rem;
+            font-size: 3.0rem;
             font-weight: 700;
             letter-spacing: 2px;
             color: #1a1a1a;
@@ -80,7 +96,7 @@
         /* 日本語タイトル（サブ） */
         .title-jp {
             font-family: 'Noto Sans JP', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #555;
             margin-bottom: 16px;
         }
@@ -88,7 +104,7 @@
         /* キャッチコピー（世界観） */
         .title-catch {
             font-family: 'Shippori Mincho', serif;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: #333;
             margin-bottom: 28px;
         }
@@ -146,9 +162,34 @@
             }
         }
 
+        /* 📱 スマホ向け調整 */
         @media (max-width: 480px) {
-            .title-en { font-size: 2.2rem; }
-            .title-catch { font-size: 1.15rem; }
+            /* タイトルをぐっと大きく */
+            .title-en {
+                font-size: 3.2rem;
+            }
+            .title-jp {
+                font-size: 1.3rem;
+            }
+            .title-catch {
+                font-size: 1.5rem;
+            }
+
+            /* ポップアップをほぼ全幅に＆上寄せ */
+            #intro-message {
+                top: 10%;
+                left: 50%;
+                transform: translate(-50%, 0);
+                width: 94%;
+                max-width: none;
+                border-radius: 14px;
+                padding: 22px 18px;
+            }
+
+            .intro-ok-btn {
+                width: 70%;
+                max-width: 220px;
+            }
         }
     </style>
 </head>
@@ -163,16 +204,7 @@
         <p><strong>さあ、いま旅立とう。</strong></p>
         <p style="font-size: 0.9rem; color: #666;">（このアプリはオートセーブに対応しています）</p>
 
-        <button onclick="hideIntro()" style="
-            margin-top: 20px;
-            padding: 8px 20px;
-            font-size: 1rem;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        ">OK</button>
+        <button class="intro-ok-btn" onclick="hideIntro()">OK</button>
     </div>
 
     <!-- ===== タイトル本体 ===== -->
