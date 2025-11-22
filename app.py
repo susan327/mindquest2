@@ -590,8 +590,20 @@ def account():
             flash("パスワードが一致しません。もう一度入力してください。", "account_error")
             return redirect(url_for("account"))
 
-        # メール更新
+        # もし他のユーザーがすでにこのメールを使っていたらエラー
         if email:
+            existing = User.query.filter(
+                User.email == email,
+                User.id != user.id,
+            ).first()
+            if existing:
+                flash(
+                    "このメールアドレスはすでに登録されています。ログイン画面からログインしてください。",
+                    "account_error",
+                )
+                return redirect(url_for("login"))
+
+            # メール更新
             user.email = email
 
         # パスワード更新（ハッシュ化）
