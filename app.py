@@ -649,27 +649,32 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        # ユーザーが存在しない or パスワード違う
-        if not user or not check_password_hash(user.password_hash, password):
+        # ユーザーが存在しない or パスワードが未設定 or パスワード違う
+        if (not user) or (not user.password_hash) or (not check_password_hash(user.password_hash, password)):
             return render_template(
                 "login.html",
                 error="メールアドレスまたはパスワードが違います。",
             )
 
-        # 成功
-        session["user_id"] = user.id
-        return redirect(url_for("menu"))
+        # 🔑 ログイン成功したら、このブラウザの user_token を
+        #    「ログインしたユーザーの user_token」に差し替える
+        resp = make_response(redirect(url_for("menu")))
+
+        resp.set_cookie(
+            "user_token",
+            user.user_token,
+            httponly=True,
+            secure=app.config["SESSION_COOKIE_SECURE"],
+            samesite="Lax",
+            max_age=60 * 60 * 24 * 365,  # 1年
+        )
+
+        # session["user_id"] は使っていないのでクリアでOK
+        session.clear()
+
+        return resp
 
     return render_template("login.html")
-
-
-@app.route("/logout")
-def logout():
-    resp = make_response(redirect(url_for("index")))
-    resp.delete_cookie("user_token")
-    session.clear()
-    flash("ログアウトしました")
-    return resp
 
 
 # =========================
