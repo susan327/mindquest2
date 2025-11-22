@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}冒険ログ{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto;">
+
+  <h1 style="margin-top: 20px; margin-bottom: 10px;">冒険ログ</h1>
+  <p style="color:#555; font-size:14px;">
+    クエストの振り返りと診断結果の履歴をまとめて確認できます。
+  </p>
+
+  <!-- ==============================
+        診断ログへのリンク
+  ============================== -->
+  <div style="text-align:center; margin: 20px 0;">
+    <a href="#diagnosis-section" style="
+      display:inline-block;
+      padding: 8px 16px;
+      background:#eef3ff;
+      border:1px solid #ccd5ff;
+      border-radius:8px;
+      font-size:14px;
+      text-decoration:none;
+      color:#334;
+    ">
+      🧠 診断ログを見る
+    </a>
+  </div>
+
+
+  <!-- ==============================
+        クエストログ
+  ============================== -->
+  <h2 id="quest-section" style="margin-top: 30px; margin-bottom: 10px; text-align:center;">
+    🗺 クエストログ
+  </h2>
+
+  {% if quest_logs %}
+    {% for log, quest in quest_logs %}
+      <div style="margin-bottom:18px; padding:14px 18px; border-radius:12px;
+          background:#f8f8ff; border:1px solid #e0e0ff;">
+
+        <!-- 日付 -->
+        <div style="font-size:13px; color:#666;">
+          {{ log.created_at|jst("%Y-%m-%d %H:%M") }}
+        </div>
+
+        <!-- クエスト名 -->
+        <div style="font-weight:bold; margin:6px 0 10px 0; font-size:16px;">
+          {{ quest.title }}
+        </div>
+
+        <!-- ▼ クエスト内容とユーザー回答（折りたたみ） -->
+        {% if log.steps_data %}
+          <details style="font-size:14px; margin-bottom:10px;">
+            <summary style="cursor:pointer; color:#333; font-weight:600; padding:4px 0;">
+              ▶ クエスト内容と回答を見る
+            </summary>
+
+            <div style="margin-top:8px; padding-left:5px;">
+              {% for step in log.steps_data %}
+                <div style="margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #eee;">
+                  <div style="font-weight:bold; margin-bottom:4px; color:#333;">
+                    STEP {{ loop.index }}：{{ step.title }}
+                  </div>
+
+                  {% if step.answer %}
+                    <div style="font-size:13px; line-height:1.6;">
+                      {{ step.answer | replace("\n", "<br>") | safe }}
+                    </div>
+                  {% else %}
+                    <div style="color:#888; font-size:12px;">
+                      （このステップは未入力でした）
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </details>
+        {% endif %}
+
+        <!-- ▼ 最後のメモ（折りたたみ） -->
+        {% if log.raw_feedback %}
+          <details style="font-size:14px; margin-bottom:10px;">
+            <summary style="cursor:pointer; padding:4px 0; font-weight:600;">
+              ▶ あなたの振り返りメモを見る
+            </summary>
+            <div style="margin-top:8px;">
+              {{ log.raw_feedback | replace("\n", "<br>") | safe }}
+            </div>
+          </details>
+        {% endif %}
+
+        <!-- ▼ AIフィードバック（折りたたみ） -->
+        {% if log.ai_feedback %}
+          <details style="font-size:14px;">
+            <summary style="cursor:pointer; padding:4px 0; font-weight:600;">
+              ▶ AIフィードバックを見る
+            </summary>
+            <div style="margin-top:8px; background:#ffffff;
+                border-radius:10px; padding:10px 12px; border:1px solid #d5d5ff;">
+              {{ log.ai_feedback | replace("\n", "<br>") | safe }}
+            </div>
+          </details>
+        {% endif %}
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="font-size:13px; color:#777;">まだクエストログはありません。</p>
+  {% endif %}
+
+
+
+  <!-- ==============================
+        クエストログへのリンク
+  ============================== -->
+  <div style="text-align:center; margin: 30px 0 10px;">
+    <a href="#quest-section" style="
+      display:inline-block;
+      padding: 8px 16px;
+      background:#f0f8ff;
+      border:1px solid #c0e0ff;
+      border-radius:8px;
+      font-size:14px;
+      text-decoration:none;
+      color:#334;
+    ">
+      🗺 クエストログを見る
+    </a>
+  </div>
+
+
+  <!-- ==============================
+        診断ログ
+  ============================== -->
+  <h2 id="diagnosis-section" style="margin-top: 20px; margin-bottom: 10px; text-align:center;">
+    🧠 診断ログ
+  </h2>
+
+  {% if diagnosis_logs %}
+    {% for row in diagnosis_logs %}
+      {% set info = type_info.get(row.top_type) if type_info else None %}
+
+      <div style="margin-bottom:18px; padding:14px 18px; border-radius:12px;
+          background:#f7fcff; border:1px solid #d0e8ff;">
+
+        <!-- 日付 -->
+        <div style="font-size:13px; color:#666;">
+          {{ row.created_at|jst("%Y-%m-%d %H:%M") }}
+        </div>
+
+        <!-- タイプ表示 -->
+        <div style="font-weight:bold; margin:6px 0 8px 0; font-size:16px;">
+          結果：
+          {% if info %}
+            {{ info.name }}（{{ row.top_type }}）
+          {% else %}
+            {{ row.top_type or "未判定" }}
+          {% endif %}
+        </div>
+
+        <!-- スコアタグ -->
+        {% if row.scores %}
+          <div style="font-size:13px; margin-bottom:6px;">
+            <span style="font-weight:bold;">📊 スコア：</span>
+            <div style="margin-top:4px;">
+              {% for tkey, score in row.scores.items() %}
+                {% set tinfo = type_info.get(tkey) if type_info else None %}
+                <span style="
+                  display:inline-block;
+                  padding:2px 8px;
+                  margin:2px 4px 2px 0;
+                  border-radius:999px;
+                  background:#eef5ff;
+                  font-size:12px;
+                ">
+                  {{ tinfo.name if tinfo else tkey }}：{{ score }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- ▼ 自由記述（折りたたみ） -->
+        {% if row.written1 or row.written2 or row.written3 %}
+          <details style="font-size:13px; color:#555; margin-top:6px;">
+            <summary style="cursor:pointer;">▶ 診断時に書いた内容を見る</summary>
+
+            <div style="margin-top:8px;">
+              {% if row.written1 %}
+                <p style="font-size:13px; margin-bottom:6px;">
+                  <strong>1. あなたが「自分らしい」と感じるのはどんなときですか？</strong><br>
+                  {{ row.written1 | replace("\n", "<br>") | safe }}
+                </p>
+              {% endif %}
+
+              {% if row.written2 %}
+                <p style="font-size:13px; margin-bottom:6px;">
+                  <strong>
+                    2. 人と関わる中で、印象に残っているうれしかったこと・つらかったことを教えてください。
+                  </strong><br>
+                  {{ row.written2 | replace("\n", "<br>") | safe }}
+                </p>
+              {% endif %}
+
+              {% if row.written3 %}
+                <p style="font-size:13px;">
+                  <strong>3. あなたが「理想の自分」だと考える性格や行動を自由に書いてください。</strong><br>
+                  {{ row.written3 | replace("\n", "<br>") | safe }}
+                </p>
+              {% endif %}
+            </div>
+          </details>
+        {% endif %}
+      </div>
+
+    {% endfor %}
+  {% else %}
+    <p style="font-size:13px; color:#777;">まだ診断ログはありません。</p>
+  {% endif %}
+
+</div>
+
+
+<!-- ▼ スムーズスクロール -->
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+</script>
+
+{% endblock %}
