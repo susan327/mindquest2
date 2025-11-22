@@ -3,18 +3,176 @@
 {% block title %}クレジット - マインドクエスト{% endblock %}
 
 {% block content %}
-<div style="text-align: center; font-size: 1.2em;">
-  <h1 style="font-size: 2em;">クレジット</h1>
-  <ul style="list-style: none; padding: 0; line-height: 1.8;">
-    <li><strong>企画・開発：</strong>杉澤 京祐</li>
-    <li><strong>開発環境：</strong>Python / Flask / PostgreSQL（Neon）/ Gemini API / HTML &amp; CSS</li>
-    <li><strong>コンセプト：</strong>冒険RPGの世界観で「自分の快」と向き合う自己理解・メンタルサポートアプリ</li>
-    <li><strong>バージョン：</strong>2025年 開発開始（継続アップデート中）</li>
-  </ul>
+<style>
+  .credit-space-wrapper {
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    /* 宇宙っぽいグラデーション背景 */
+    background: radial-gradient(circle at top,
+              rgba(120, 180, 255, 0.45),
+              transparent 55%)
+              ,
+              radial-gradient(circle at bottom,
+              rgba(180, 120, 255, 0.45),
+              transparent 55%)
+              ,
+              #020617;
+  }
 
-  <p style="margin-top:2em; font-style:italic; font-size: 1.1em;">
-    ゆっくりでいい。<br>
-    こころのクエストは、いつでも再開できる。
-  </p>
+  .credit-card {
+    position: relative;
+    max-width: 520px;
+    width: 100%;
+    padding: 1.8rem 1.6rem;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.82); /* ダーク＋半透明 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 0 25px rgba(56, 189, 248, 0.4),
+      0 0 60px rgba(129, 140, 248, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    color: #e5e7eb;
+    text-align: left;
+  }
+
+  /* 角にちょっとした “宇宙エフェクト” */
+  .credit-card::before,
+  .credit-card::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(6px);
+    opacity: 0.9;
+  }
+
+  .credit-card::before {
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle,
+                rgba(96, 165, 250, 0.9),
+                transparent 60%);
+    top: -25px;
+    right: -15px;
+  }
+
+  .credit-card::after {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle,
+                rgba(244, 114, 182, 0.9),
+                transparent 60%);
+    bottom: -20px;
+    left: -10px;
+  }
+
+  .credit-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .credit-icon {
+    font-size: 2rem;
+    /* コンパスをほんのり光らせる */
+    filter:
+      drop-shadow(0 0 6px rgba(255, 255, 255, 0.6))
+      drop-shadow(0 0 12px rgba(94, 234, 212, 0.45));
+  }
+
+  .credit-main-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .credit-subtitle {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 1.2rem;
+  }
+
+  .credit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .credit-list li {
+    margin-bottom: 0.4rem;
+  }
+
+  .credit-label {
+    font-weight: 600;
+    color: #e0f2fe;
+  }
+
+  .credit-footer {
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(148, 163, 184, 0.7);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #cbd5f5;
+    text-align: center;
+  }
+
+  .credit-footer span {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #9ca3af;
+  }
+
+  @media (max-width: 640px) {
+    .credit-card {
+      padding: 1.6rem 1.2rem;
+    }
+    .credit-main-title {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<div class="credit-space-wrapper">
+  <div class="credit-card">
+    <div class="credit-title-row">
+      <div class="credit-icon">🧭✨</div>
+      <div>
+        <div class="credit-main-title">MindQuest / マインドクエスト</div>
+        <div class="credit-subtitle">自己理解RPG × メンタルサポートアプリ</div>
+      </div>
+    </div>
+
+    <ul class="credit-list">
+      <li>
+        <span class="credit-label">開発・制作：</span>
+        杉澤 京祐
+      </li>
+      <li>
+        <span class="credit-label">開発環境：</span>
+        Python / Flask / PostgreSQL（Neon） / Gemini API / HTML &amp; CSS
+      </li>
+      <li>
+        <span class="credit-label">コンセプト：</span>
+        冒険RPGの世界観で「自分の快」と向き合う、自己理解・メンタルサポートアプリ
+      </li>
+      <li>
+        <span class="credit-label">バージョン：</span>
+        2025年 開発開始（継続アップデート中）
+      </li>
+    </ul>
+
+    <div class="credit-footer">
+      心の迷宮を、いま旅立とう<br>
+      <span>©2025 MINDQUEST</span>
+    </div>
+  </div>
 </div>
 {% endblock %}
