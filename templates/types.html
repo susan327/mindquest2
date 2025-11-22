@@ -3,170 +3,213 @@
 {% block title %}性格タイプ図鑑 - マインドクエスト{% endblock %}
 
 {% block content %}
-<h1>性格タイプ図鑑（マインドクエスト）</h1>
 
 <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f9f9f9;
-    margin: 2em;
-    line-height: 1.7;
+  .types-container {
+    max-width: 900px;
+    margin: 0 auto 2em;
+    padding: 1.5em 1em;
     color: #333;
   }
+
+  .types-container h1 {
+    margin-bottom: 1.5em;
+    text-align: center;
+  }
+
   .type-section {
     background-color: #fff;
     border-left: 8px solid #5A8DEE;
     padding: 1em;
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
     border-radius: 8px;
+
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 16px;
   }
+
   .type-section .type-info {
     flex: 2;
   }
+
   .type-section .type-image {
     flex: 1;
     text-align: center;
     padding-left: 1em;
   }
+
   .type-section .type-image img {
     max-height: 200px;
+    max-width: 100%;
     object-fit: contain;
   }
+
   .type-section h2 {
     margin-top: 0;
   }
+
   .type-section p {
     margin: 0.4em 0;
+    line-height: 1.7;
+  }
+
+  /* ▼ スマホ用調整：縦並びにしてテキスト幅を広くする ▼ */
+  @media (max-width: 768px) {
+    .types-container {
+      padding: 1em 0.5em;
+    }
+
+    .type-section {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .type-section .type-info {
+      width: 100%;
+    }
+
+    .type-section .type-image {
+      padding-left: 0;
+      margin-top: 0.5em;
+    }
+
+    .type-section .type-image img {
+      max-width: 70%;
+      max-height: 220px;
+    }
   }
 </style>
 
-<!-- 賢者（Sage） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>賢者（Sage）</h2>
-    <p><strong>【特徴】</strong>物事を深く考える慎重派。状況を俯瞰し、慎重に進むスタイルを好むが、思考が深まりすぎて動き出せないこともある。</p>
-    <p><strong>【長所】</strong>分析力と計画性に優れ、全体像を把握して行動できる。</p>
-    <p><strong>【短所】</strong>決断までに時間がかかり、行動に移すタイミングを逃しやすい。</p>
-    <p><strong>【勇者になるには】</strong>まずは小さな行動から始めて、試行錯誤の経験を積むことが成長への鍵。</p>
-  </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/sage.png') }}" alt="賢者のイラスト">
-  </div>
-</div>
+<div class="types-container">
+  <h1>性格タイプ図鑑（マインドクエスト）</h1>
 
-<!-- 武闘家（Monk） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>武闘家（Monk）</h2>
-    <p><strong>【特徴】</strong>思い立ったらすぐに動く行動派。反射的な決断力が魅力だが、後から後悔する場面も。</p>
-    <p><strong>【長所】</strong>即断即決の行動力とエネルギッシュな姿勢が周囲を引っ張る。</p>
-    <p><strong>【短所】</strong>慎重さに欠け、衝動的なミスや衝突を招きやすい。</p>
-    <p><strong>【勇者になるには】</strong>一呼吸置いてから動く癖をつけることで、行動力に安定感が加わる。</p>
+  <!-- 賢者（Sage） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>賢者（Sage）</h2>
+      <p><strong>【特徴】</strong>物事を深く考える慎重派。状況を俯瞰し、慎重に進むスタイルを好むが、思考が深まりすぎて動き出せないこともある。</p>
+      <p><strong>【長所】</strong>分析力と計画性に優れ、全体像を把握して行動できる。</p>
+      <p><strong>【短所】</strong>決断までに時間がかかり、行動に移すタイミングを逃しやすい。</p>
+      <p><strong>【勇者になるには】</strong>まずは小さな行動から始めて、試行錯誤の経験を積むことが成長への鍵。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/sage.png') }}" alt="賢者のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/monk.png') }}" alt="武闘家のイラスト">
-  </div>
-</div>
 
-<!-- 僧侶（Priest） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>僧侶（Priest）</h2>
-    <p><strong>【特徴】</strong>人の気持ちに敏感で、つい相手を優先しがち。優しさゆえに疲弊することも。</p>
-    <p><strong>【長所】</strong>思いやりや共感力に優れ、人間関係を円滑にする力を持つ。</p>
-    <p><strong>【短所】</strong>自己犠牲が多く、自分の気持ちを抑えてしまいやすい。</p>
-    <p><strong>【勇者になるには】</strong>自分の気持ちにも耳を傾ける習慣が、心のバランスを整えてくれる。</p>
+  <!-- 武闘家（Monk） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>武闘家（Monk）</h2>
+      <p><strong>【特徴】</strong>思い立ったらすぐに動く行動派。反射的な決断力が魅力だが、後から後悔する場面も。</p>
+      <p><strong>【長所】</strong>即断即決の行動力とエネルギッシュな姿勢が周囲を引っ張る。</p>
+      <p><strong>【短所】</strong>慎重さに欠け、衝動的なミスや衝突を招きやすい。</p>
+      <p><strong>【勇者になるには】</strong>一呼吸置いてから動く癖をつけることで、行動力に安定感が加わる。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/monk.png') }}" alt="武闘家のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/priest.png') }}" alt="僧侶のイラスト">
-  </div>
-</div>
 
-<!-- 魔法使い（Mage） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>魔法使い（Mage）</h2>
-    <p><strong>【特徴】</strong>感受性が豊かで直感に優れる。情熱の波が激しく、浮き沈みがある。</p>
-    <p><strong>【長所】</strong>創造性やひらめきに満ち、独自の世界観を持っている。</p>
-    <p><strong>【短所】</strong>感情に左右されやすく、継続力にムラが出やすい。</p>
-    <p><strong>【勇者になるには】</strong>感情の波に気づき、自分なりのペース配分を見つけることがカギ。</p>
+  <!-- 僧侶（Priest） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>僧侶（Priest）</h2>
+      <p><strong>【特徴】</strong>人の気持ちに敏感で、つい相手を優先しがち。優しさゆえに疲弊することも。</p>
+      <p><strong>【長所】</strong>思いやりや共感力に優れ、人間関係を円滑にする力を持つ。</p>
+      <p><strong>【短所】</strong>自己犠牲が多く、自分の気持ちを抑えてしまいやすい。</p>
+      <p><strong>【勇者になるには】</strong>自分の気持ちにも耳を傾ける習慣が、心のバランスを整えてくれる。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/priest.png') }}" alt="僧侶のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/mage.png') }}" alt="魔法使いのイラスト">
-  </div>
-</div>
 
-<!-- 盗賊（Thief） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>盗賊（Thief）</h2>
-    <p><strong>【特徴】</strong>自由を大切にし、束縛を嫌うタイプ。ひらめきと柔軟性が武器。</p>
-    <p><strong>【長所】</strong>自由な発想と行動力で、新しい道を切り開く。</p>
-    <p><strong>【短所】</strong>責任や継続が苦手で、飽きやすい傾向がある。</p>
-    <p><strong>【勇者になるには】</strong>楽しみながら続けられる工夫が、持続力と信頼を育てる。</p>
+  <!-- 魔法使い（Mage） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>魔法使い（Mage）</h2>
+      <p><strong>【特徴】</strong>感受性が豊かで直感に優れる。情熱の波が激しく、浮き沈みがある。</p>
+      <p><strong>【長所】</strong>創造性やひらめきに満ち、独自の世界観を持っている。</p>
+      <p><strong>【短所】</strong>感情に左右されやすく、継続力にムラが出やすい。</p>
+      <p><strong>【勇者になるには】</strong>感情の波に気づき、自分なりのペース配分を見つけることがカギ。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/mage.png') }}" alt="魔法使いのイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/thief.png') }}" alt="盗賊のイラスト">
-  </div>
-</div>
 
-<!-- 芸術家（Artist） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>芸術家（Artist）</h2>
-    <p><strong>【特徴】</strong>感性が鋭く、美しさや表現に惹かれるタイプ。繊細さが魅力でもあり課題にもなる。</p>
-    <p><strong>【長所】</strong>美的センスと表現力が高く、人の心を動かす力を持つ。</p>
-    <p><strong>【短所】</strong>傷つきやすく、気持ちが不安定になりやすい。</p>
-    <p><strong>【勇者になるには】</strong>感情の波を受け入れつつ、自分を守る術を持つことで安定する。</p>
+  <!-- 盗賊（Thief） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>盗賊（Thief）</h2>
+      <p><strong>【特徴】</strong>自由を大切にし、束縛を嫌うタイプ。ひらめきと柔軟性が武器。</p>
+      <p><strong>【長所】</strong>自由な発想と行動力で、新しい道を切り開く。</p>
+      <p><strong>【短所】</strong>責任や継続が苦手で、飽きやすい傾向がある。</p>
+      <p><strong>【勇者になるには】</strong>楽しみながら続けられる工夫が、持続力と信頼を育てる。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/thief.png') }}" alt="盗賊のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/artist.png') }}" alt="芸術家のイラスト">
-  </div>
-</div>
 
-<!-- 守護者（Guardian） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>守護者（Guardian）</h2>
-    <p><strong>【特徴】</strong>安心や安定を好み、ルールや枠の中で力を発揮する。変化には慎重。</p>
-    <p><strong>【長所】</strong>誠実で信頼される存在。地道な努力を継続できる。</p>
-    <p><strong>【短所】</strong>新しいことへの不安が強く、変化に対して抵抗を感じやすい。</p>
-    <p><strong>【勇者になるには】</strong>変化を小さく区切って経験することで、不安を減らし適応力が育つ。</p>
+  <!-- 芸術家（Artist） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>芸術家（Artist）</h2>
+      <p><strong>【特徴】</strong>感性が鋭く、美しさや表現に惹かれるタイプ。繊細さが魅力でもあり課題にもなる。</p>
+      <p><strong>【長所】</strong>美的センスと表現力が高く、人の心を動かす力を持つ。</p>
+      <p><strong>【短所】</strong>傷つきやすく、気持ちが不安定になりやすい。</p>
+      <p><strong>【勇者になるには】</strong>感情の波を受け入れつつ、自分を守る術を持つことで安定する。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/artist.png') }}" alt="芸術家のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/guardian.png') }}" alt="守護者のイラスト">
-  </div>
-</div>
 
-<!-- 指揮官（Commander） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>指揮官（Commander）</h2>
-    <p><strong>【特徴】</strong>強い責任感と統率力を持ち、目標に向けて突き進むリーダータイプ。</p>
-    <p><strong>【長所】</strong>目標達成への意志と、周囲をまとめる力に優れている。</p>
-    <p><strong>【短所】</strong>理想が高く、他者や自分に厳しくなりがち。孤独を感じることも。</p>
-    <p><strong>【勇者になるには】</strong>信頼を預けることで、チームとの調和が生まれる。</p>
+  <!-- 守護者（Guardian） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>守護者（Guardian）</h2>
+      <p><strong>【特徴】</strong>安心や安定を好み、ルールや枠の中で力を発揮する。変化には慎重。</p>
+      <p><strong>【長所】</strong>誠実で信頼される存在。地道な努力を継続できる。</p>
+      <p><strong>【短所】</strong>新しいことへの不安が強く、変化に対して抵抗を感じやすい。</p>
+      <p><strong>【勇者になるには】</strong>変化を小さく区切って経験することで、不安を減らし適応力が育つ。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/guardian.png') }}" alt="守護者のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/commander.png') }}" alt="指揮官のイラスト">
-  </div>
-</div>
 
-<!-- 勇者（Brave） -->
-<div class="type-section">
-  <div class="type-info">
-    <h2>勇者（Brave）</h2>
-    <p><strong>【特徴】</strong>すべてのタイプの特性を理解し、統合していく“実績型”の称号。</p>
-    <p><strong>【長所】</strong>多様な視点を受け入れ、バランスの取れた判断ができる。</p>
-    <p><strong>【短所】</strong>理想が高すぎて、達成できない自分を責めてしまうことがある。</p>
-    <p><strong>【勇者になるには】</strong>過去の自分も含めて肯定することが、真の勇者への道。</p>
+  <!-- 指揮官（Commander） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>指揮官（Commander）</h2>
+      <p><strong>【特徴】</strong>強い責任感と統率力を持ち、目標に向けて突き進むリーダータイプ。</p>
+      <p><strong>【長所】</strong>目標達成への意志と、周囲をまとめる力に優れている。</p>
+      <p><strong>【短所】</strong>理想が高く、他者や自分に厳しくなりがち。孤独を感じることも。</p>
+      <p><strong>【勇者になるには】</strong>信頼を預けることで、チームとの調和が生まれる。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/commander.png') }}" alt="指揮官のイラスト">
+    </div>
   </div>
-  <div class="type-image">
-    <img src="{{ url_for('static', filename='images/brave.png') }}" alt="勇者のイラスト">
+
+  <!-- 勇者（Brave） -->
+  <div class="type-section">
+    <div class="type-info">
+      <h2>勇者（Brave）</h2>
+      <p><strong>【特徴】</strong>すべてのタイプの特性を理解し、統合していく“実績型”の称号。</p>
+      <p><strong>【長所】</strong>多様な視点を受け入れ、バランスの取れた判断ができる。</p>
+      <p><strong>【短所】</strong>理想が高すぎて、達成できない自分を責めてしまうことがある。</p>
+      <p><strong>【勇者になるには】</strong>過去の自分も含めて肯定することが、真の勇者への道。</p>
+    </div>
+    <div class="type-image">
+      <img src="{{ url_for('static', filename='images/brave.png') }}" alt="勇者のイラスト">
+    </div>
   </div>
 </div>
 
