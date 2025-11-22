@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <title>マインドクエスト - タイトル</title>
 
-    <!-- 元の style.css -->
+    <!-- ★ これが無いとスマホでレスポンシブ効かない -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 共通CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <!-- Google Fonts：英字 + 和文 + キャッチコピー -->
+    <!-- タイトル用フォント -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+JP:wght@400;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
 
     <script>
@@ -83,7 +86,6 @@
             text-align: center;
         }
 
-        /* 英字タイトル */
         .title-en {
             font-family: 'Montserrat', sans-serif;
             font-size: 3.0rem;
@@ -93,7 +95,6 @@
             margin-bottom: 4px;
         }
 
-        /* 日本語タイトル（サブ） */
         .title-jp {
             font-family: 'Noto Sans JP', sans-serif;
             font-size: 1.2rem;
@@ -101,7 +102,6 @@
             margin-bottom: 16px;
         }
 
-        /* キャッチコピー（世界観） */
         .title-catch {
             font-family: 'Shippori Mincho', serif;
             font-size: 1.4rem;
@@ -109,7 +109,6 @@
             margin-bottom: 28px;
         }
 
-        /* ===== ボタン配置 ===== */
         .title-menu {
             display: flex;
             flex-direction: column;
@@ -153,7 +152,6 @@
             color: #222;
         }
 
-        /* ===== レスポンシブ（PC時横並び） ===== */
         @media (min-width: 768px) {
             .title-menu {
                 flex-direction: row;
@@ -162,9 +160,9 @@
             }
         }
 
-        /* 📱 スマホ向け調整 */
+        /* =====📱 スマホ向け調整 ===== */
         @media (max-width: 480px) {
-            /* タイトルをぐっと大きく */
+            /* タイトルでかく */
             .title-en {
                 font-size: 3.2rem;
             }
@@ -175,13 +173,13 @@
                 font-size: 1.5rem;
             }
 
-            /* ポップアップをほぼ全幅に＆上寄せ */
+            /* ポップアップをほぼ全幅＆上寄せに */
             #intro-message {
-                top: 10%;
-                left: 50%;
-                transform: translate(-50%, 0);
-                width: 94%;
-                max-width: none;
+                top: 10% !important;
+                left: 50% !important;
+                transform: translate(-50%, 0) !important;
+                width: 94% !important;
+                max-width: none !important;
                 border-radius: 14px;
                 padding: 22px 18px;
             }
@@ -196,7 +194,7 @@
 
 <body>
 
-    <!-- ===== イントロメッセージ ===== -->
+    <!-- イントロメッセージ -->
     <div id="intro-message">
         <p>ここは心の迷宮。</p>
         <p>迷いや葛藤、過去の影が行く手を阻む。</p>
@@ -207,7 +205,7 @@
         <button class="intro-ok-btn" onclick="hideIntro()">OK</button>
     </div>
 
-    <!-- ===== タイトル本体 ===== -->
+    <!-- タイトル本体 -->
     <div class="container title-container">
 
         <div class="title-en">MINDQUEST</div>
@@ -216,14 +214,13 @@
 
         <div class="menu title-menu">
             <a href="/menu" class="menu-button btn-start">▶ 冒険をはじめる</a>
-
             <button onclick="confirmReset()" class="menu-button btn-reset">
                 🔄 冒険をやり直す
             </button>
         </div>
 
         <div style="margin-top: 8px;">
-            <a href="/credit" class="title-credit">🪪 クレジット</a>
+           <a href="/credit" class="credit-button">🪪 クレジット</a>
         </div>
 
     </div>
