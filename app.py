@@ -677,6 +677,18 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/logout")
+def logout():
+    # ログアウトしたらトップ or メニューに戻す
+    resp = make_response(redirect(url_for("index")))
+    # この端末用の user_token クッキーを削除
+    resp.delete_cookie("user_token")
+    # セッションもきれいにしておく
+    session.clear()
+    flash("ログアウトしました")
+    return resp
+
+
 # =========================
 # メニュー
 # =========================
