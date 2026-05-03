@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>名前の登録</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 2em;
+        }
+        .container {
+            background: white;
+            padding: 2em;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 1em;
+            font-size: 1.2em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 0.5em;
+        }
+        button {
+            background-color: #5A8DEE;
+            color: white;
+            padding: 0.8em 2em;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+        button:hover {
+            background-color: #3e6edb;
+        }
+        label, p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>冒険者の名前を教えてください</h1>
+        <form action="/name" method="POST">
+    <label for="name">名前（10文字以内）:</label><br>
+    <input type="text" name="name" id="name" maxlength="10" required><br>
+    <p>※後から変更できます</p>
+    <button type="submit">冒険を始める！</button>
+</form>
+    </div>
+</body>
+</html>

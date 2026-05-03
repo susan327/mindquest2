@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}AI日記プレビュー{% endblock %}
+
+{% block content %}
+<style>
+  .preview-container {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 2em;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    font-size: 1.1em;
+    line-height: 1.8;
+  }
+
+  .preview-mood {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0.5em 0 1em;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 0.95em;
+  }
+
+  .preview-actions {
+    text-align: center;
+    margin-top: 2em;
+  }
+
+  .preview-actions form,
+  .preview-actions a {
+    display: inline-block;
+    margin: 0.5em;
+  }
+
+  .preview-actions button,
+  .preview-actions a.button-link {
+    padding: 0.6em 1.2em;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .save-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .edit-button {
+    background-color: #2196F3;
+    color: white;
+  }
+
+  .reset-button {
+    background-color: #f44336;
+    color: white;
+  }
+</style>
+
+<div class="preview-container">
+  <h1>📝 AIによる日記のまとめ</h1>
+
+  {% if mood_label %}
+    <div class="preview-mood">今日の気分：{{ mood_label }}</div>
+  {% endif %}
+
+  <p>{{ composed|e }}</p>
+
+  {% if analysis %}
+  <h3>🧠 AIからのコメント</h3>
+  <p>{{ analysis }}</p>
+  {% endif %}
+
+  <div class="preview-actions">
+    <!-- この内容でそのまま保存 -->
+    <form method="POST" action="{{ url_for('journal_save') }}">
+      <input type="hidden" name="content" value="{{ composed|e }}">
+      <input type="hidden" name="mood_score" value="{{ mood_score or '' }}">
+      <button type="submit" class="save-button">💾 この内容で保存する</button>
+    </form>
+
+    <!-- 通常日記モードで修正（session['journal_draft'] を使う） -->
+    <a href="{{ url_for('journal', mode='edit') }}" class="button-link edit-button">
+      ✏️ この内容をもとに修正する
+    </a>
+
+    <!-- 1から書き直す -->
+    <a href="{{ url_for('journal') }}" class="button-link reset-button">
+      🔄 1から書き直す
+    </a>
+  </div>
+</div>
+
+{% endblock %}

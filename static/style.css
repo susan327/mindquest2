@@ -1,0 +1,792 @@
+/* =========================================
+   MindQuest 共通スタイル（本番整理版）
+   - 共通UIはここに集約
+   - 快分析/履歴は白背景で統一
+   - スマホ対応
+========================================= */
+
+/* ------------------------------
+   ベース
+------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+}
+
+a {
+  color: #3399cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 0 8px;
+}
+
+/* ------------------------------
+   コンテナ・レイアウト
+------------------------------ */
+.container {
+  max-width: 960px;
+  margin: 16px auto;
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+}
+
+section + section {
+  margin-top: 24px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    margin: 32px auto;
+    padding: 24px 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    margin: 40px auto;
+    padding: 32px 40px;
+  }
+}
+
+/* ------------------------------
+   見出し・テキスト
+------------------------------ */
+h1,
+h2,
+h3 {
+  color: #2d3e50;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.1rem; }
+
+p {
+  margin: 0 0 12px;
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.2rem; }
+}
+
+/* ------------------------------
+   カード・メッセージ
+------------------------------ */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+}
+
+.question-block {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: #f0f8ff;
+  border-left: 5px solid #3399cc;
+  border-radius: 6px;
+}
+
+.message-box {
+  background: #f8fbff;
+  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid #d7e9ff;
+  font-size: 0.95rem;
+}
+
+/* ------------------------------
+   メニュー
+------------------------------ */
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.menu-button {
+  display: block;
+  text-align: center;
+  background: #3399cc;
+  color: #fff;
+  padding: 12px 18px;
+  font-size: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.1s;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-button:hover {
+  background: #2277aa;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+@media (min-width: 768px) {
+  .menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .menu-button {
+    flex: 1 1 42%;
+    max-width: 320px;
+    margin: 4px;
+  }
+}
+
+/* ------------------------------
+   ボタン
+------------------------------ */
+button,
+input[type="submit"],
+.btn {
+  display: inline-block;
+  background: #28a745;
+  color: #fff;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.1s;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: #4caf50;
+}
+
+.btn-primary:hover {
+  background: #45a049;
+}
+
+.btn-secondary {
+  background: #6c757d;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.btn-danger,
+.btn-kai-delete,
+.history-delete-btn {
+  background: #e57373;
+  color: #fff;
+}
+
+.btn-danger:hover,
+.btn-kai-delete:hover,
+.history-delete-btn:hover {
+  background: #ef5350;
+}
+
+@media (max-width: 768px) {
+  button,
+  input[type="submit"],
+  .btn,
+  .menu-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ------------------------------
+   フォーム
+------------------------------ */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+::placeholder {
+  color: #aaa;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+  }
+
+  .form-row > * {
+    flex: 1;
+  }
+}
+
+/* ------------------------------
+   テーブル
+------------------------------ */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+th {
+  background: #f2f4f7;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  table {
+    font-size: 0.85rem;
+    min-width: 360px;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+  }
+}
+
+/* ------------------------------
+   バッジ・タグ
+------------------------------ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.badge-level {
+  background: #ffe0b2;
+  color: #ef6c00;
+}
+
+.badge-type {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* ------------------------------
+   アラート
+------------------------------ */
+.alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.alert-info {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.alert-success {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.alert-error {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+/* ------------------------------
+   クレジット・補助ボタン
+------------------------------ */
+.credit-button {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background: #fff;
+  color: #444;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.credit-button:hover {
+  background: #f5f5f5;
+  color: #222;
+}
+
+/* ------------------------------
+   日記ページ
+------------------------------ */
+.journal-mode-switch button {
+  margin-top: 8px !important;
+}
+
+#simpleMode,
+#stepMode {
+  margin-top: 14px !important;
+}
+
+/* ------------------------------
+   レベルアップ・XP演出
+------------------------------ */
+#flashOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flash-toast {
+  min-width: 280px;
+  max-width: 90%;
+  text-align: center;
+  padding: 18px 26px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+  animation: levelPop 2.2s ease forwards;
+}
+
+.flash-toast.levelup {
+  background: linear-gradient(135deg, #ffd700, #ff9800, #ff5f6d);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+}
+
+.flash-toast.xp {
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+}
+
+.flash-toast.error {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+@keyframes levelPop {
+  0% {
+    transform: scale(0.4) rotate(-6deg);
+    opacity: 0;
+  }
+  18% {
+    transform: scale(1.15) rotate(3deg);
+    opacity: 1;
+  }
+  32% {
+    transform: scale(1) rotate(0deg);
+  }
+  78% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------
+   快ページ
+------------------------------ */
+.kai-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2em 1em;
+}
+
+.kai-analysis-action {
+  text-align: center;
+  margin-bottom: 1.2em;
+}
+
+.analyze-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #4caf50;
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.analyze-btn:hover {
+  background: #45a049;
+  text-decoration: none;
+}
+
+.analysis-box {
+  background: #fff;
+  color: #333;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 1.4em;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.analysis-box h3 {
+  margin-top: 0;
+  margin-bottom: 0.7em;
+  color: #2d3e50;
+}
+
+.analysis-box pre,
+.history-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  line-height: 1.7;
+}
+
+.kai-sort-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.5em;
+  font-size: 0.9rem;
+}
+
+.kai-sort-row select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+ul.kai-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kai-item {
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.kai-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kai-title {
+  font-size: 0.95rem;
+}
+
+.kai-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.kai-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.btn-kai-delete {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  width: auto !important;
+  max-width: fit-content;
+}
+
+.kai-add-row {
+  margin-bottom: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.kai-container input[type="text"] {
+  width: 70%;
+  max-width: 260px;
+}
+
+#kaiModal {
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+.kai-presets {
+  text-align: center;
+  margin-top: 1em;
+}
+
+.kai-presets button {
+  margin: 0.3em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+}
+
+.kai-presets button:hover {
+  background: #ddd;
+}
+
+.kai-ranking {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fafafa;
+  border-radius: 10px;
+}
+
+.kai-ranking ul {
+  list-style: none;
+  padding: 0;
+}
+
+.kai-ranking li {
+  padding: 5px 0;
+  font-weight: 500;
+}
+
+/* ------------------------------
+   快分析履歴
+------------------------------ */
+.analysis-history {
+  margin-top: 1.6em;
+  margin-bottom: 1.8em;
+}
+
+.analysis-history-title {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 2px 7px rgba(37, 99, 235, 0.25);
+}
+
+.analysis-history-title:hover {
+  background: #1d4ed8;
+}
+
+.analysis-history-list {
+  display: none;
+  margin-top: 12px;
+}
+
+.history-item {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.history-toggle {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: left;
+}
+
+.history-toggle:hover {
+  background: #e2e8f0;
+}
+
+.history-delete-form {
+  margin: 0;
+}
+
+.history-delete-btn {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.history-content {
+  display: none;
+  margin-top: 8px;
+  background: #fff;
+  color: #333;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.08);
+}
+
+/* ------------------------------
+   ユーティリティ
+------------------------------ */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.mt-0 { margin-top: 0; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+
+.small-text {
+  font-size: 0.82rem;
+  color: #777;
+}
+
+/* ------------------------------
+   スマホ調整
+------------------------------ */
+@media (max-width: 768px) {
+  .kai-item {
+    padding: 8px 10px;
+  }
+
+  .kai-sort-row {
+    justify-content: center;
+  }
+
+  .kai-container input[type="text"] {
+    width: 80%;
+    max-width: 100%;
+  }
+
+  .analyze-btn {
+    width: 100%;
+    max-width: 280px;
+    box-sizing: border-box;
+  }
+
+  .history-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .history-delete-btn {
+    width: auto;
+    align-self: flex-end;
+  }
+}

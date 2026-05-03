@@ -1,0 +1,900 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .journal-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2em 1em;
+  }
+
+  .journal-container h1,
+  .journal-container h2 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  .flash-area {
+    margin: 0 auto 1.2em;
+    max-width: 760px;
+  }
+
+  .flash-message {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: #eef7ff;
+    border: 1px solid #b9dcff;
+    color: #1f4f7a;
+    font-size: 14px;
+  }
+
+  .journal-mode-switch {
+    text-align: center;
+    margin-bottom: 1.5em;
+  }
+
+  .journal-mode-switch button {
+    margin: 0 0.6em;
+    min-width: 160px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: none;
+    background: #f1f5f9;
+    color: #334155;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .journal-mode-switch button:hover {
+    background: #e2e8f0;
+  }
+
+  .journal-form textarea {
+    width: 100%;
+    max-width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+    line-height: 1.7;
+  }
+
+  .journal-form button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .journal-form button:hover {
+    background: #45a049;
+  }
+
+  .mood-box {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .mood-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #334155;
+  }
+
+  .mood-help {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .mood-options {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mood-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    min-height: 40px;
+  }
+
+  .mood-option:hover {
+    background: #eef7ff;
+    border-color: #93c5fd;
+  }
+
+  .mood-option input {
+    margin: 0;
+  }
+
+  .mood-graph-card {
+    background: #fff;
+    padding: 18px 20px;
+    margin: 22px 0;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .mood-graph-card h2 {
+    margin-top: 0;
+  }
+
+  .mood-range-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .mood-range-buttons button {
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .mood-range-buttons button.active,
+  .mood-range-buttons button:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+  }
+
+  .mood-average-box {
+    text-align: center;
+    margin: 0 auto 14px;
+    padding: 12px 14px;
+    max-width: 520px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    line-height: 1.7;
+  }
+
+  .mood-average-main {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .mood-average-sub {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .mood-chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+
+  .mood-chart-message {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    margin: 12px 0 0;
+  }
+
+  .selected-day-box {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    display: none;
+  }
+
+  .selected-day-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .selected-entry {
+    background: #fff;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .selected-entry-meta {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 6px;
+  }
+
+  .selected-entry-content {
+    margin: 0;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    color: #222;
+  }
+
+  .entry-card {
+    background: #fff;
+    padding: 18px 20px;
+    margin: 14px 0;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .entry-card time {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+
+  .entry-mood {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 13px;
+  }
+
+  .entry-content {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #222;
+    margin: 0 0 14px;
+    white-space: pre-wrap;
+  }
+
+  .feedback {
+    margin: 14px 0;
+    padding: 14px 16px;
+    background: #f0f8ff;
+    border-left: 5px solid #3498db;
+    border-radius: 10px;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  .feedback-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #2563eb;
+  }
+
+  .feedback-body {
+    margin: 0;
+    white-space: normal;
+  }
+
+  .entry-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .entry-actions form {
+    margin: 0;
+  }
+
+  .ai-feedback-btn {
+    width: 100%;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 11px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .ai-feedback-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .delete-btn {
+    width: 100%;
+    background: #e57373;
+    color: #fff;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .delete-btn:hover {
+    background: #ef5350;
+  }
+
+  #kaiModalOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 999;
+  }
+
+  #kaiSuggestionModal {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+    max-width: 420px;
+    width: 90%;
+    z-index: 1000;
+  }
+
+  #kaiSuggestionModal h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  #kaiSuggestionModal p {
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.7;
+  }
+
+  #kaiSuggestions {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+
+  #kaiSuggestions li {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #kaiSuggestions input {
+    margin-right: 6px;
+  }
+
+  .kai-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .kai-modal-actions button {
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .kai-save-btn {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .kai-skip-btn {
+    background: #e2e8f0;
+    color: #334155;
+  }
+
+  @media (max-width: 700px) {
+    .mood-options {
+      grid-template-columns: 1fr;
+    }
+
+    .mood-option {
+      justify-content: flex-start;
+      padding-left: 14px;
+    }
+
+    .mood-chart-wrap {
+      height: 280px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .journal-mode-switch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6em;
+    }
+
+    .journal-mode-switch button {
+      margin: 0;
+      width: 85%;
+    }
+
+    .entry-card {
+      padding: 16px;
+    }
+  }
+</style>
+
+<div class="journal-container">
+  <h1>📝 日記を書く</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-area">
+        {% for message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="journal-mode-switch">
+    <button type="button" onclick="switchMode('simple')">📝 通常日記モード</button>
+    <button type="button" onclick="switchMode('steps')">🧠 6ステップモード</button>
+  </div>
+
+  <!-- 通常日記モード -->
+  <div id="simpleMode">
+    <form method="POST"
+          action="/journal/save"
+          class="journal-form"
+          onsubmit="return confirmKaiRegister(event);">
+      <div class="mood-box">
+        <div class="mood-title">今日の気分を選ぶ</div>
+        <div class="mood-options">
+          {% for score, label in mood_labels|dictsort(reverse=true) %}
+            <label class="mood-option">
+              <input type="radio" name="mood_score" value="{{ score }}"
+                     {% if draft_mood_score == score %}checked{% endif %}>
+              <span>{{ label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        <div class="mood-help">未選択でも保存できます。選ぶと下の「気持ちグラフ」に反映されます。</div>
+      </div>
+
+      <textarea name="content"
+          id="journalContent"
+          placeholder="今日感じたことや考えたことを書いてみよう..."
+          required>{{ draft or "" }}</textarea><br>
+      <input type="hidden" name="kai_extracted" id="kaiExtracted">
+      <button type="submit">保存する</button>
+    </form>
+
+    <div id="kaiModalOverlay"></div>
+
+    <!-- 快モーダル -->
+    <div id="kaiSuggestionModal">
+      <h3>快候補を確認</h3>
+      <p>
+        以下の「快」が抽出されました。<br>
+        保存したいものだけチェックを入れてください。
+      </p>
+
+      <ul id="kaiSuggestions"></ul>
+
+      <div class="kai-modal-actions">
+        <button type="button" class="kai-save-btn" onclick="submitConfirmedJournal()">
+          選択した快を保存する
+        </button>
+        <button type="button" class="kai-skip-btn" onclick="closeKaiModal()">
+          快を保存せずに日記だけ保存
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6ステップモード -->
+  <div id="stepMode" style="display: none;">
+    <form method="POST" action="/journal/compose" class="journal-form">
+      <div class="mood-box">
+        <div class="mood-title">今日の気分を選ぶ</div>
+        <div class="mood-options">
+          {% for score, label in mood_labels|dictsort(reverse=true) %}
+            <label class="mood-option">
+              <input type="radio" name="mood_score" value="{{ score }}">
+              <span>{{ label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        <div class="mood-help">AIでまとめたあと、この気分も一緒に保存されます。</div>
+      </div>
+
+      <textarea name="step1" placeholder="① 出来事（例：上司に注意された／友人と電話した／カフェに寄った）"></textarea><br>
+      <textarea name="step2" placeholder="② 感情（例：悲しかった／安心した／イライラした）"></textarea><br>
+      <textarea name="step3" placeholder="③ 思考（例：自分はダメかも／頑張ってよかった／嫌われたかも）"></textarea><br>
+      <textarea name="step4" placeholder="④ 分析（例：評価を気にしすぎ／完璧主義だから／認められたい気持ち）"></textarea><br>
+      <textarea name="step5" placeholder="⑤ 行動（例：謝った／散歩した／そのまま帰った）"></textarea><br>
+      <textarea name="step6" placeholder="⑥ 結果（例：相手が笑ってくれた／少し前向きになれた／気づきがあった）"></textarea><br>
+      <button type="submit">📝 AIにまとめてもらう</button>
+    </form>
+  </div>
+
+  <div class="mood-graph-card">
+    <h2>📈 気持ちグラフ</h2>
+    <div class="mood-range-buttons">
+      <button type="button" class="mood-range-btn active" data-days="30" onclick="loadMoodGraph(30)">1か月</button>
+      <button type="button" class="mood-range-btn" data-days="90" onclick="loadMoodGraph(90)">3か月</button>
+      <button type="button" class="mood-range-btn" data-days="180" onclick="loadMoodGraph(180)">6か月</button>
+      <button type="button" class="mood-range-btn" data-days="365" onclick="loadMoodGraph(365)">1年</button>
+    </div>
+
+    <div id="moodAverageBox" class="mood-average-box">
+      <div class="mood-average-main">平均気分を読み込み中...</div>
+      <div class="mood-average-sub">期間を切り替えると平均も更新されます。</div>
+    </div>
+
+    <div class="mood-chart-wrap">
+      <canvas id="moodChart"></canvas>
+    </div>
+    <p id="moodChartMessage" class="mood-chart-message">グラフを読み込み中...</p>
+
+    <div id="selectedDayBox" class="selected-day-box"></div>
+  </div>
+
+  <hr>
+
+  <h2>📘 過去の日記一覧</h2>
+
+  {% if entries %}
+    {% for entry in entries %}
+      <div class="entry-card" id="entry-{{ entry.id }}">
+        <time>{{ entry.created_at|jst("%Y-%m-%d %H:%M") }}</time>
+
+        {% if entry.mood_score %}
+          <div class="entry-mood">気分：{{ mood_labels.get(entry.mood_score, "未記録") }}</div>
+        {% endif %}
+
+        <p class="entry-content">{{ entry.content }}</p>
+
+        {% if entry.feedback %}
+          <div class="feedback">
+            <div class="feedback-title">🧠 AIからの感想</div>
+            <p class="feedback-body">
+              {{ entry.feedback | replace('\n', '<br>') | safe }}
+            </p>
+          </div>
+        {% endif %}
+
+        <div class="entry-actions">
+          <form method="POST" action="/journal/feedback">
+            <input type="hidden" name="entry_id" value="{{ entry.id }}">
+            <button type="submit" class="ai-feedback-btn">
+              {% if entry.feedback %}
+                🧠 もう一度AIに感想をもらう
+              {% else %}
+                🧠 AIに感想をもらう
+              {% endif %}
+            </button>
+          </form>
+
+          <form method="POST"
+                action="{{ url_for('journal_delete', entry_id=entry.id) }}"
+                onsubmit="return confirm('この日記を本当に削除しますか？');">
+            <button type="submit" class="delete-btn">🗑 削除</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>まだ日記がありません。</p>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const moodLabels = {
+  1: "かなりしんどい",
+  2: "少ししんどい",
+  3: "ふつう",
+  4: "まあまあ良い",
+  5: "とても良い"
+};
+
+const rangeLabels = {
+  30: "1か月",
+  90: "3か月",
+  180: "6か月",
+  365: "1年"
+};
+
+let moodChart = null;
+let moodPoints = [];
+
+function switchMode(mode) {
+  document.getElementById("simpleMode").style.display =
+    (mode === "simple") ? "block" : "none";
+  document.getElementById("stepMode").style.display =
+    (mode === "steps") ? "block" : "none";
+}
+
+function openKaiModal() {
+  document.getElementById("kaiModalOverlay").style.display = "block";
+  document.getElementById("kaiSuggestionModal").style.display = "block";
+}
+
+function hideKaiModalOnly() {
+  document.getElementById("kaiModalOverlay").style.display = "none";
+  document.getElementById("kaiSuggestionModal").style.display = "none";
+}
+
+function confirmKaiRegister(event) {
+  event.preventDefault();
+
+  const form = document.querySelector("#simpleMode form");
+  const textarea = document.getElementById("journalContent");
+  const content = (textarea.value || "").trim();
+
+  if (!content) {
+    alert("日記の内容を入力してね");
+    textarea.focus();
+    return false;
+  }
+
+  fetch("/journal/extract_kai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.kai && data.kai.length > 0) {
+      const ul = document.getElementById("kaiSuggestions");
+      ul.innerHTML = "";
+
+      data.kai.forEach(k => {
+        const li = document.createElement("li");
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "kai-checkbox";
+        checkbox.value = k;
+        checkbox.checked = true;
+
+        const span = document.createElement("span");
+        span.textContent = k;
+
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        li.appendChild(label);
+        ul.appendChild(li);
+      });
+
+      openKaiModal();
+    } else {
+      form.submit();
+    }
+  })
+  .catch(err => {
+    console.error("快抽出エラー:", err);
+    form.submit();
+  });
+
+  return false;
+}
+
+function submitConfirmedJournal() {
+  const checkboxes = Array.from(
+    document.querySelectorAll("#kaiSuggestions .kai-checkbox")
+  );
+
+  const selected = checkboxes
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  const hidden = document.getElementById("kaiExtracted");
+  hidden.value = selected.length > 0 ? JSON.stringify(selected) : "";
+
+  hideKaiModalOnly();
+  document.querySelector("#simpleMode form").submit();
+}
+
+function closeKaiModal() {
+  document.getElementById("kaiExtracted").value = "";
+  hideKaiModalOnly();
+  document.querySelector("#simpleMode form").submit();
+}
+
+function setActiveRangeButton(days) {
+  document.querySelectorAll(".mood-range-btn").forEach(btn => {
+    btn.classList.toggle("active", Number(btn.dataset.days) === Number(days));
+  });
+}
+
+function updateMoodAverageBox(days, data) {
+  const box = document.getElementById("moodAverageBox");
+  const rangeLabel = rangeLabels[days] || `${days}日`;
+  const average = data.average;
+  const recordDays = data.record_days ?? (data.points ? data.points.length : 0);
+
+  if (average === null || average === undefined || recordDays === 0) {
+    box.innerHTML = `
+      <div class="mood-average-main">${rangeLabel}中の平均気分はまだありません</div>
+      <div class="mood-average-sub">気分を選んで日記を保存すると、ここに平均が表示されます。</div>
+    `;
+    return;
+  }
+
+  const roundedLabel = moodLabels[Math.round(Number(average))] || "";
+  box.innerHTML = `
+    <div class="mood-average-main">${rangeLabel}中の平均気分は ${Number(average).toFixed(1)}点</div>
+    <div class="mood-average-sub">目安：${escapeHtml(roundedLabel)} ／ 記録日数：${recordDays}日</div>
+  `;
+}
+
+function loadMoodGraph(days) {
+  setActiveRangeButton(days);
+  const message = document.getElementById("moodChartMessage");
+  const selectedBox = document.getElementById("selectedDayBox");
+  const averageBox = document.getElementById("moodAverageBox");
+
+  message.textContent = "グラフを読み込み中...";
+  averageBox.innerHTML = `
+    <div class="mood-average-main">平均気分を読み込み中...</div>
+    <div class="mood-average-sub">期間を切り替えると平均も更新されます。</div>
+  `;
+  selectedBox.style.display = "none";
+  selectedBox.innerHTML = "";
+
+  fetch(`/api/mood_graph?range=${days}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.ok) {
+        throw new Error("APIエラー");
+      }
+      moodPoints = data.points || [];
+      updateMoodAverageBox(days, data);
+      renderMoodChart(moodPoints);
+    })
+    .catch(err => {
+      console.error("気持ちグラフ取得エラー:", err);
+      message.textContent = "気持ちグラフの取得に失敗しました。";
+      averageBox.innerHTML = `
+        <div class="mood-average-main">平均気分の取得に失敗しました</div>
+        <div class="mood-average-sub">時間をおいてもう一度試してみてください。</div>
+      `;
+    });
+}
+
+function renderMoodChart(points) {
+  const message = document.getElementById("moodChartMessage");
+  const ctx = document.getElementById("moodChart");
+
+  if (moodChart) {
+    moodChart.destroy();
+    moodChart = null;
+  }
+
+  if (!points || points.length === 0) {
+    message.textContent = "まだ気分が記録された日記がありません。日記を書くときに気分を選ぶと、ここに表示されます。";
+    return;
+  }
+
+  if (typeof Chart === "undefined") {
+    message.textContent = "グラフライブラリの読み込みに失敗しました。";
+    return;
+  }
+
+  const labels = points.map(p => p.date);
+  const values = points.map(p => p.avg_mood);
+
+  moodChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "気分",
+        data: values,
+        tension: 0.25,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y;
+              const rounded = Math.round(value);
+              return `気分：${value}（${moodLabels[rounded] || ""}）`;
+            }
+          }
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          min: 1,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            callback: function(value) {
+              return moodLabels[value] || value;
+            }
+          }
+        }
+      },
+      onClick: function(event, elements) {
+        if (!elements || elements.length === 0) return;
+        const index = elements[0].index;
+        showSelectedDay(index);
+      }
+    }
+  });
+
+  message.textContent = "点をクリックすると、その日の日記を確認できます。";
+}
+
+function showSelectedDay(index) {
+  const point = moodPoints[index];
+  if (!point) return;
+
+  const box = document.getElementById("selectedDayBox");
+  const avgRounded = Math.round(point.avg_mood);
+  const avgLabel = moodLabels[avgRounded] || "";
+
+  let html = `
+    <h3>📓 ${escapeHtml(point.date)} の日記</h3>
+    <div class="selected-entry-meta">平均気分：${point.avg_mood}（${escapeHtml(avgLabel)}）／日記 ${point.count}件</div>
+  `;
+
+  (point.entries || []).forEach(entry => {
+    html += `
+      <div class="selected-entry">
+        <div class="selected-entry-meta">${escapeHtml(entry.time)} ／ 気分：${escapeHtml(entry.mood_label || "未記録")}</div>
+        <p class="selected-entry-content">${escapeHtml(entry.content || "")}</p>
+      </div>
+    `;
+  });
+
+  box.innerHTML = html;
+  box.style.display = "block";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+window.addEventListener("load", () => {
+  loadMoodGraph(30);
+});
+</script>
+{% endblock %}
